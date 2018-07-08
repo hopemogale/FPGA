@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>GPIO</title>
+
+<style>
+   body {
+      font-family: sans-serif;
+      font-size: 24px;
+      margin: 30px;
+   }
+   input {
+      line-height: 24px;
+      font-size: 24px;
+      -webkit-appearance:none;
+   }
+</style>
+<script>
+  
+  window.setTimeout(rpc_getGPIO, 1000);
+
+  function rpc_getGPIO()
+      {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+              o = JSON.parse(xhttp.responseText);
+              document.getElementById("GPIO24").innerHTML = o.gpio24;
+              document.getElementById("GPIO25").innerHTML = o.gpio25;
+              document.getElementById("GPIO20").innerHTML = o.gpio20;
+              window.setTimeout(rpc_getGPIO, 1000);
+          }
+      };
+
+      var request = {};
+      request.jsonrpc = "2.0";
+      request.method = "getGPIO";
+      request.id = 1;
+
+      xhttp.open("POST", "/json-rpc", true);
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.send(JSON.stringify(request));
+  }
+  
+
+  function rpc_setGPIO()
+  {
+     var xhttp = new XMLHttpRequest();
+
+      var request = {};
+      request.jsonrpc = "2.0";
+      request.method = "setGPIO";
+      request.params = [];
+      request.params[0] = document.getElementById("GPIO18").value;
+      request.params[1] = document.getElementById("GPIO19").value;
+      request.id = 1;
+  
+      xhttp.open("POST", "/json-rpc", true);
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.send(JSON.stringify(request));
+  }
+
+</script>
+</head>
+
+<body>
+  Raspberry Pi GPIO<BR>
+  <BR>
+  GPIO 18 : <input type="text" id="GPIO18" value="0" size="5"><BR>
+  GPIO 19 : <input type="text" id="GPIO19" value="0" size="5"><BR>
+  GPIO 20 : <span id="GPIO20">0</span> : Flashing<BR>
+  GPIO 21 : Pulse<BR>
+  <BR>
+  GPIO 24 : <span id="GPIO24">0</span><BR>
+  GPIO 25 : <span id="GPIO25">0</span><BR>
+  <input type="button" value="Set" onclick="rpc_setGPIO()">
+</body>
+</html>

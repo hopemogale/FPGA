@@ -1,0 +1,7 @@
+all: serial-test
+
+serial-test: serial-test.c
+	gcc $^ -o $@ -g -lwiringPi
+
+clean:
+	rm -rf *.o *~ serial-test
